@@ -1,7 +1,6 @@
 import streamlit as st
 import cv2
 import numpy as np
-import matplotlib.pyplot as plt
 from skimage import measure
 from sklearn.cluster import KMeans
 
@@ -91,7 +90,7 @@ def process_image(image):
 
     return {
         "Original": image,
-        "Thresholded": thresholded_image,
+        "Thresholded (Otsu's)": thresholded_image,  # Label added here
         "Region Grown": region_grown_image,
         "Region Split": split_image,
         "Region Merged": merged_image,
@@ -109,6 +108,7 @@ def normalize_image(img):
 
 # Streamlit application
 st.title("Image Processing with Segmentation Techniques")
+st.write("Created by Pragya and Jayaditya")  # Added line
 
 uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"], key="image_uploader")
 
