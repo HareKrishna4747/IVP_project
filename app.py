@@ -7,7 +7,7 @@ from sklearn.cluster import KMeans
 from tensorflow.keras.models import load_model  # Import the load_model function
 
 # Load your pre-trained model
-model = load_model('/Users/jaydaksharora/Downloads/brain tumour/lenet.h5')  # Adjust the path accordingly
+model = load_model('lenet.h5')  # Adjust the path accordingly
 
 # Define the tumor labels
 tumor_labels = {
