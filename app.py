@@ -4,17 +4,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 from skimage import measure
 from sklearn.cluster import KMeans
-from tensorflow.keras.models import load_model  # Import the load_model function
-
-# Load your pre-trained model
-model = load_model('lenet.h5')  # Adjust the path accordingly
-
-# Define the tumor labels
-tumor_labels = {
-    0: 'Meningioma',
-    1: 'Glioma',
-    2: 'Pituitary Tumor'
-}
 
 # Define the image processing function with K-means
 def process_image(image):
@@ -118,15 +107,6 @@ def normalize_image(img):
         img /= img.max()  # Scale to [0, 1]
     return (img * 255).astype(np.uint8)  # Convert to 8-bit
 
-# Pad image if smaller than 512x512
-def pad_image(image, target_size=(512, 512)):
-    h, w = image.shape
-    top_pad = (target_size[0] - h) // 2
-    bottom_pad = target_size[0] - h - top_pad
-    left_pad = (target_size[1] - w) // 2
-    right_pad = target_size[1] - w - left_pad
-    return np.pad(image, ((top_pad, bottom_pad), (left_pad, right_pad)), mode='constant', constant_values=0)
-
 # Streamlit application
 st.title("Image Processing with Segmentation Techniques")
 
@@ -147,26 +127,3 @@ if uploaded_file is not None:
     for title, img in processed_images.items():
         st.subheader(title)
         st.image(normalize_image(img), channels="GRAY" if title != "Original" else "RGB")
-
-    # Ask if the user wants to predict the tumor type
-    if st.button("Predict Tumor Type"):
-        # Check image dimensions
-        h, w = gray_image.shape
-        if h > 512 or w > 512:
-            st.error("Image dimensions are too large. Please upload an image with dimensions 512x512 or smaller.")
-        else:
-            # Pad image if smaller
-            if h < 512 or w < 512:
-                gray_image = pad_image(gray_image)
-
-            # Prepare the image for prediction
-            prepared_image = gray_image.reshape(1, 512, 512, 1)  # Reshape to match model input
-
-            # Make predictions
-            predictions = model.predict(prepared_image)
-            predicted_class = np.argmax(predictions, axis=1)[0]  # Get the predicted class index
-            tumor_type = tumor_labels.get(predicted_class, "Unknown")  # Map to tumor type
-
-            # Display the prediction result
-            st.subheader("Prediction Result:")
-            st.write(f"The predicted tumor type is: **{tumor_type}**")
